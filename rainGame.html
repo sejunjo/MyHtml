@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>산성비</title>
+    
+    <style>
+        *{
+            margin: 0;
+        }
+        #wrapper{
+            margin: 0 auto;
+            width: 600px;
+            height: 600px;
+            border: 1px solid black;
+        }
+        #id_upper{
+            background-image: url(../../images/azena.jpg);
+            background-size: 100% 100%;
+            position: relative;
+            width: 100%;
+            height: 500px;
+            border: 1px solid black;
+        }
+        #id_bottom{
+            text-align: center;
+            width: 100%;
+            height: 100px;
+            border: 1px solid black;
+        }
+        .interi{
+            height: 70px;
+            font-size: 2em;
+        }
+        .txtClass{
+            position: absolute;
+            border: 1px solid skyblue;
+            height: 25px;
+        }
+    </style>
+</head>
+<body>
+    <div id="wrapper">
+        <div id="id_upper"></div>
+        <div id="id_bottom">
+            <input type="text" id="id_txtBox" class="interi" style="width: 300px; top: 5px; position: relative;" value="">
+            <input type="button" value="시작" style="width: 100px; height: 75px;" onclick="f_start()" autofocus>
+        </div>
+        <div id="id_score" style="width: 300px;"></div>
+        
+
+    </div>
+
+    <script>
+        // 산성비에 쓸 키워드
+        var v_jsStudy = [ 
+            "use strict","var","Number","String","Boolean","Array []","Object {}","true","false","null","NaN","undefined","infinite","JSON","case",
+            "for","while","switch","continue","break","function","return","if elseif else", "typeof","instanceof","new","==","===",
+            "trim","indexOf","replace","split","substr","push","splice","sort","this","call","apply","bind","stringify","parse","regexp //","test","$1 $2",
+            "i++","++i", "i+=3","Math","random","ceil","floor","sin","cos","round","FileReader","prototype","readAsDataURL","readAsText","result",
+            "window","location","history","navigator","screen","userAgent","opener",
+            "open","close","frames","self","top","innerWidth","innerHeight","href","reload","replace","setTimeout","clearTimeout",
+            "document","write","getElementById","getElementsByName","getElementsByTagName","getElementsByClassName","querySelector","querySelectorAll",
+            "styleSheets","cssRules","cssText","style","selectorText","innerHTML","children","parentElement","createElement","setAttribute",
+            "getAttribute","appendChild",
+            "onload","onclick","onchange","onmouseover","onmousemove","ondragover","ondrop","ondragstart","onunload","onkeydown","clientX","clientY","key",
+            "onmousedown","onmouseup","onfocus","onblur","stopPropagation","preventDefault","addEventListener","dataTransfer",
+            "display","position","z-index","overflow","transform","visibility","background","margin","padding","border","opacity",
+            "block","inline","static","relative","absolute","hidden","auto","visible","width","height","auto","text-align","line-height",
+            "rotate","translate","skew","scale","id #","class .",
+            "a","input","img","div","p","h1~h6","pre","span","ul","ol","li","select","option","textarea","form","audio","video","canvas","svg",
+            "table","tr","td",
+            "type","name","value","pattern","action","method","required","readonly","disabled","checked","download","target","accept",
+            "rowspan","colspan","rows","cols","data-",
+            "button","radio","checkbox","date","color","file","submit","reset"
+        ];
+
+        var v_upper;
+
+        // 단어 입력 창 불러오기
+        var v_txtBox = document.getElementById("id_txtBox");
+        // 단어 입력창에서 엔터를 누르면 함수가 작동하도록 설정
+        v_txtBox.onkeydown = function(){
+            if(event.key == "Enter"){
+                for(var i=0; i<v_onDiv.length; i++){
+                    if(v_txtBox.value == v_onDiv[i].innerHTML){
+                        v_onDiv[i].style.top = "-30px";     // 배열 v_onDiv 내 요소를 화면 밖으로 올려버린다.
+                        v_onDiv.splice(i, 1);   // 배열 v_onDiv 내 인덱스 i번째 요소를 삭제
+                        v_count++;  // 단어를 입력한 횟수 1 증가
+                        break;
+                    }
+                }
+                v_txtBox.value = "";
+            }
+        }
+
+        // 단어 다 가져와서 div로 만들어서 위에 숨김(화면 바깥)
+        function f_init(){
+            v_upper = document.getElementById("id_upper");
+            // 각 v_jsStudy내 단어 요소들에 대해 새로운 div 태그에 감싼 후 v_upper 아이디를 가진 태그에 추가
+            for(var i=0; i<v_jsStudy.length; i++){
+                var v_div = document.createElement("div");
+                v_div.setAttribute("id", "word"+(i+1));
+                v_div.innerHTML = v_jsStudy[i];
+                v_div.style.top = "-25px";
+
+                v_div.setAttribute("class", "txtClass");
+                v_upper.appendChild(v_div);
+            }
+        }
+
+        // 함수 2개를 연결 시켜줄 배열 바구니
+        var v_onDiv = [];
+
+        // 속도 제어
+        var v_vel = 900;
+
+        // 정답 수
+        var v_count = 0;
+
+        // 놓친 수
+        var v_miss = 0;
+
+        // 단어를 고르는 함수
+        function f_choice(){
+            var v_ranId = Math.ceil(Math.random()*v_jsStudy.length);
+            var v_ranDiv = document.getElementById("word"+v_ranId);
+            v_ranDiv.style.left = Math.ceil(Math.random()*400) + 20 + "px";
+            v_onDiv.push(v_ranDiv);
+
+            setTimeout(f_choice, v_vel*2);
+        }
+
+        // 랜덤 색상
+        // function f_ranColor() {
+        //     return "rgba(" + Math.floor(Math.random()*256) + "," 
+        //                 + Math.floor(Math.random()*256) + "," 
+        //                 + Math.floor(Math.random()*256) + "," 
+        //                 + (Math.floor(Math.random()*10)+5)/10 + ")";
+        // }
+
+        // 단어를 내려가게 하는 함수
+        function f_down(){
+            for(var i=0; i<v_onDiv.length; i++){
+                v_onDiv[i].style.top = parseInt(v_onDiv[i].style.top) + (Math.round(Math.random()*20)+10) + "px";
+                // v_onDiv[i].style.backgroundColor = f_ranColor();
+                // v_onDiv[i].style.color = f_ranColor();
+                //v_onDiv[i].style.transform = "rotate(" + Math.round(Math.random()*360) +"deg)";
+
+                // 땅바닥으로 떨어지면 화면 밖으로 내보낸 후 v_onDiv 배열에서 제거하며, 놓친 횟수(v_miss)를 증가 시킨다.
+                if(parseInt(v_onDiv[i].style.top) > 480){
+                    v_onDiv[i].style.top = "-30px";
+                    v_miss++;
+                    v_onDiv.splice(i, 1);
+                }
+
+                // 10개 이상 놓쳤다면 게임 종료 후 페이지 새로고침 
+                if(v_miss >= 10){
+                    alert("Game Over");
+                    v_miss = 0;
+                    v_count = 0;
+                    location.reload();
+                }
+
+                // 맞춘 횟수에 따른 속도 증가
+                if(v_count >= 30 && v_vel > 700){
+                    v_vel = 700;    // v_vel은 작아질수록 속도 증가
+                }
+                if(v_count >= 60 && v_vel > 500){
+                    v_vel = 500;
+                }
+            }
+            document.getElementById("id_score").innerHTML = "score: " + v_count*10 + " miss: " + v_miss;
+            setTimeout(f_down, v_vel);      // f_down 함수를 v_vel 밀리초 후 실행
+        }
+
+        // onload 는 문서를 한번 다 읽은 후에 실행되므로 시퀀스를 생각해야함
+        window.onload = function(){
+            f_init();
+        }
+
+        // 시작
+        function f_start(){
+            // 랜덤 단어를 골라서 v_onDiv 에 담아줌
+            f_choice();
+            // v_onDiv에 담긴 단어들을 밑으로 내린다.
+            f_down();
+            // 채팅창에 커서가 오도록 한다.
+            v_txtBox.focus();
+        }
+    </script>
+</body>
+</html>
